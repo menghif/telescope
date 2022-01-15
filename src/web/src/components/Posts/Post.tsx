@@ -9,6 +9,9 @@ import {
   ListSubheader,
   createStyles,
   useMediaQuery,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Chip,
 } from '@material-ui/core';
 import ErrorRoundedIcon from '@material-ui/icons/ErrorRounded';
@@ -18,6 +21,7 @@ import Spinner from '../Spinner';
 import PostDesktopInfo from './PostInfo';
 import PostAvatar from './PostAvatar';
 import GitHubInfo from './GitHubInfo';
+import GitHubInfoMobile from './GItHubInfoMobile';
 import ShareButton from './ShareButton';
 
 type Props = {
@@ -59,7 +63,8 @@ const useStyles = makeStyles((theme: Theme) =>
         gridTemplateColumns: 'auto auto auto auto',
         justifyContent: 'left',
         width: '100%',
-        padding: '1em 0 1em 0',
+        padding: '1em 0 0 0',
+        marginBottom: '0',
       },
     },
     titleContainer: {
@@ -92,6 +97,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 'clamp(2.5em, 4vw, 3em)',
       [theme.breakpoints.down(1205)]: {
         textAlign: 'start',
+        fontSize: '2em',
         marginLeft: '.3em',
       },
       [theme.breakpoints.down(1024)]: {
@@ -202,6 +208,25 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: '.5em',
         width: 'auto',
       },
+    },
+    accordionSummary: {
+      marginTop: '0',
+      paddingRight: '0',
+      justifyContent: 'flex-end',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      paddingBottom: '0',
+      '& .MuiAccordionSummary-content': {
+        marginBottom: '0.2em',
+      },
+    },
+    accordion: {
+      backgroundColor: 'inherit',
+      border: 'none',
+      boxShadow: 'none',
+      top: '0',
+      zIndex: 1,
+      position: 'sticky',
     },
   })
 );
@@ -315,62 +340,89 @@ const PostComponent = ({ postUrl, currentPost, totalPosts }: Props) => {
         </div>
       )}
 
-      <ListSubheader component="div" className={classes.postInfo}>
-        <div className={classes.titleContainer}>
-          <Typography
-            variant="h3"
-            title={post.title}
-            id={post.id}
-            className={clsx(classes.title, expandHeader && classes.expandedTitle)}
-          >
-            <span
-              role="button"
-              tabIndex={0}
-              onClick={() => setExpandHeader(!expandHeader)}
-              onKeyDown={() => setExpandHeader(!expandHeader)}
-            >
-              {post.title}
-            </span>
-          </Typography>
-        </div>
-        {!desktop && (
-          <>
-            <div className={classes.authorAvatarContainer}>
-              <PostAvatar name={post.feed.author} url={post.feed.link} />
-            </div>
-            <div className={classes.authorNameContainer}>
-              <h1 className={classes.author}>
-                <a className={classes.link} href={post.feed.link}>
-                  {post.feed.author}
-                </a>
-              </h1>
-            </div>
-            <div className={classes.publishedDateContainer}>
-              <h1 className={classes.published}>
-                <a href={post.url} rel="bookmark" className={classes.link}>
-                  <time dateTime={post.updated}>{`${formatPublishedDate(post.updated)}`}</time>
-                </a>
-
-                <ShareButton url={post.url} />
-              </h1>
-
-              <div>
-                <AdminButtons />
+      {!desktop && (
+        <Accordion className={classes.accordion}>
+          <AccordionSummary className={classes.accordionSummary}>
+            <ListSubheader component="div" className={classes.postInfo}>
+              <div className={classes.titleContainer}>
+                <Typography
+                  variant="h3"
+                  title={post.title}
+                  id={post.id}
+                  className={clsx(classes.title, expandHeader && classes.expandedTitle)}
+                >
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setExpandHeader(!expandHeader)}
+                    onKeyDown={() => setExpandHeader(!expandHeader)}
+                  >
+                    {post.title}
+                  </span>
+                </Typography>
               </div>
-            </div>
-          </>
-        )}
-      </ListSubheader>
+              <div className={classes.authorAvatarContainer}>
+                <PostAvatar name={post.feed.author} url={post.feed.link} />
+              </div>
+              <div className={classes.authorNameContainer}>
+                <h1 className={classes.author}>
+                  <a className={classes.link} href={post.feed.link}>
+                    {post.feed.author}
+                  </a>
+                </h1>
+              </div>
+              <div className={classes.publishedDateContainer}>
+                <h1 className={classes.published}>
+                  <a href={post.url} rel="bookmark" className={classes.link}>
+                    <time dateTime={post.updated}>{`${formatPublishedDate(post.updated)}`}</time>
+                  </a>
+
+                  <ShareButton url={post.url} />
+                </h1>
+
+                <div>
+                  <AdminButtons />
+                </div>
+              </div>
+            </ListSubheader>
+          </AccordionSummary>
+          <AccordionDetails>
+            {!!extractedGitHubUrls.length && <GitHubInfoMobile ghUrls={extractedGitHubUrls} />}
+          </AccordionDetails>
+        </Accordion>
+      )}
+
       {desktop && (
-        <ListSubheader component="div" className={classes.desktopPostInfo}>
-          <PostDesktopInfo
-            postUrl={post.url}
-            authorName={post.feed.author}
-            postDate={formatPublishedDate(post.updated)}
-            blogUrl={post.feed.link}
-          />
-          {!!extractedGitHubUrls.length && <GitHubInfo ghUrls={extractedGitHubUrls} />}
-        </ListSubheader>
+        <>
+          <ListSubheader component="div" className={classes.postInfo}>
+            <div className={classes.titleContainer}>
+              <Typography
+                variant="h3"
+                title={post.title}
+                id={post.id}
+                className={clsx(classes.title, expandHeader && classes.expandedTitle)}
+              >
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setExpandHeader(!expandHeader)}
+                  onKeyDown={() => setExpandHeader(!expandHeader)}
+                >
+                  {post.title}
+                </span>
+              </Typography>
+            </div>
+          </ListSubheader>
+          <ListSubheader component="div" className={classes.desktopPostInfo}>
+            <PostDesktopInfo
+              postUrl={post.url}
+              authorName={post.feed.author}
+              postDate={formatPublishedDate(post.updated)}
+              blogUrl={post.feed.link}
+            />
+            {!!extractedGitHubUrls.length && <GitHubInfo ghUrls={extractedGitHubUrls} />}
+          </ListSubheader>
+        </>
       )}
       <div className={classes.content}>
         <section
