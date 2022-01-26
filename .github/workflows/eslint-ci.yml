@@ -1,7 +1,12 @@
 name: ESLint Workflow
 
 on:
-  workflow_call:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   # Make sure eslint passes

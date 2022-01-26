@@ -1,7 +1,12 @@
 name: Prettier Workflow
 
 on:
-  workflow_call:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   # Confirm that prettier was run on the changes

@@ -1,9 +1,16 @@
 name: e2e Tests Workflow
 
 on:
-  workflow_call:
+  pull_request:
     paths-ignore:
       - 'docs/**'
+    branches:
+      - master
+  push:
+    paths-ignore:
+      - 'docs/**'
+    branches:
+      - master
 
 jobs:
   e2e:
