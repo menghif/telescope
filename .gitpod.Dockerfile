@@ -3,10 +3,12 @@ FROM gitpod/workspace-base
 # Installing Node LTS
 # https://github.com/nvm-sh/nvm#installing-and-updating
 USER gitpod
-RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash \
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
     && bash -c ". .nvm/nvm.sh \
         && nvm install --lts \
         && nvm alias default lts/*"
+
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 # Installing docker
 # https://docs.docker.com/engine/install/ubuntu/
